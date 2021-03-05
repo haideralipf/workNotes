@@ -1,0 +1,2 @@
+Find similar files in folders
+comm -12 <(ls dir1 | sed 's/\.[^.]*$//') <(ls dir2 | sed 's/\.[^.]*$//')

@@ -1,0 +1,68 @@
+Text Processing Bash
+
+sort || sorts file
+sort -n || numerical sorty
+sort -r || sort in reverse
+
+tsort || topological sort
+
+uniq || remove duplicates 
+uniq -c || show count with distincts
+
+expand || converts tabs to spaces
+unexpand || convert spaces to tabs
+
+cut -d' ' -f1,2 || cut fields with space and return first and second field
+
+past items prices || merges items with prices horizontal wise
+
+join items prices || same as paste but in meaningful fashion
+
+head -c5 || prints first 5 characters
+head -5 || prints first 5 lines
+
+tail -c5 || prints last 5 characters
+tail -5 || prints last 5 lines
+
+grep || searches text using regular expression
+-i || case insensitive
+-w || whole match
+-l || show only matches lines
+-r || recursive search
+-n || show line number
+-v || show invert matches
+gerp va1|var2 multiple searches
+
+sed -e '/^$/d' $filename || -e tells that editing instruction above, deletes all blank lines
+
+/d for delete
+/p for print
+/g for global
+
+1,/^$/d || deletes from the begining of input to including first blank line
+
+s/GUI//g ||deletes all occurances of GUI
+/GUI/g || deletes all lines containing GUI
+s/ *$// || deletes all spaces at the end of line 
+
+awk '{print $1}' || prints first fields
+awk '{print $0}' || prints all lines
+
+wc || word count
+-w || only word count
+-l || lines count
+-c || byte count
+-m || gives only character count
+-L || length of longest line
+
+tr || character translation filter
+tr -d 0-9 filename || delete all digit from file
+tr --squeeze-repeats 'X' || delete all repeating X
+tr '[:alpha:]' - || replaces alphabet with -
+tr [:upper:] [:lower:] || replaces upeer with lower
+ 
+
+constants:
+$# || number of arguments
+$@ || all arguments
+$? || last successful command

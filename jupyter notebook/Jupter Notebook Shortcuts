@@ -1,0 +1,35 @@
+Jupter Notebook Shortcuts
+
+shift-enter | execute current cell
+command + enter | run selected cells
+alt + enter | run current cell and insert below
+
+
+esc on cell = command mode
+enter in command mode = edit mode
+
+command mode
+h | help
+H | show all shorcuts
+shift + up | extend selcted cells above
+shift + below | extend selected cells below
+c | copy
+v | paste
+x | cut
+z | undo
+a | creates a cell above
+b | creates a cell below
+shift + m | merge cells together
+cntrl, shift, - | seperate cells
+m | markdown mode
+y | code mode
+r | raw mode
+d + d | delete selected cells
+shift + space | scroll notebook up
+ctrl + home | go to cell start
+ctrl + end | go to end cell
+
+
+select cells 
+f | find and replace
+

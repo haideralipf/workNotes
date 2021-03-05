@@ -1,0 +1,338 @@
+BASH
+=======
+
+-> Shell scripting is interpreted not compiled.
+>> cat /etc/shells
+
+-> use this command to take input from user:
+	>> read <variable_name>
+
+-p flag allow us to read input on the same line
+-sp flag with read is for password
+-a flag with read is for array
+
+-> When we enter “read” alone, all the values will be saved in $REPLY variable.
+
+-> Pass arguments from terminal:
+	>> $0 $1 $2 
+	# first value will go in $1
+	# In $0, the filename will be stored.
+
+-> To read arguments in an array
+	>> args=(“$@”)
+	>> echo ${args[0]} ${args[1]}
+
+-> Print all the arguments
+	>> echo $@
+
+-> Print number of arguments
+	>> echo $#
+
+
+IF-ELIF-THEN conditions
+
+
+
+
+
+File Operators
+==========
+
+
+
+
+LOGICAL AND
+==========
+
+
+
+LOGICAL OR
+=========
+
+-> || operator
+-o for OR operator
+
+
+ARITHMETIC OPERATIONS
+====================
+
+
+
+Floating point math operations
+=======================
+
+
+
+The Case Statement
+===============
+
+
+
+
+Array Variables
+============
+
+
+
+While Loop
+========
+
+
+
+Reading file content in bash
+=====================
+
+
+
+
+UNTIL Loop
+=========
+
+
+
+
+FOR Loop
+========
+
+
+
+
+Select Loop
+=========
+
+
+BREAK and CONTINUE
+=================
+
+
+
+Functions
+========
+
+
+
+
+Local Variables:
+
+
+
+
+
+-> uniq is working for numbers only
+
+
+
+
+-> “sed” and “awk” are both Turing-complete languages.
+
+————————————————————————————————————————————————————————————————————————
+														UNIX COMMANDS                   
+————————————————————————————————————————————————————————————————————————
+
+Find 
+——- 
+Find files and directories based on the filters   
+>> find . // Find all files and directories in a current directory (search all the sub directories as well) 
+>> find <dir_name> // Find everything in that specific directory 
+>> find . -type d // Only find directories in current directory 
+>> find . -type f // Only find files in current directory 
+>> find . -type f -name “”<file_name> // Find specific file in all the files (wildcards can be used in name) 
+-> -iname flag makes it incase sensitive. 
+>> find . -type f -mmin -10 // Find out all the files modified in last 10 minutes (+10 means files that were modified more than 10 mins ago) 
+>> find . -type f -mmin +1 -mmin -5 // Files modified more than 1 min ago and less than 5 mins ago 
+>> find . -type f -mtime -10 // Files modified in less than 10 days ago 
+>> find . -size +5M // Find all the files whose size is more than 5 megabytes. (K (lowercase) -> kilobytes, G-> Gigabytes) 
+>> find . -empty // Find all the empty files and directories 
+>> find . -perm 777 // Find all the files and directories with permissions 777 
+-> To execute command after find we use “-exec” flag. 
+>> find <dir_name> -exec chown <username>:<groupname> {} + // change user and group for everything in the directory ({} is command placeholder and + is used to end the command) 
+>> find <dir_name> -type d -exec chmod 775 {} + 
+>> find <dir_name> -perm 775 // Find all the files with permission 775 
+>> find .  -type f -name “*.jpg” -maxdepth 1 -exec rm {} + // Remove all the jpg files in the current directory (-maxdepth -> only search on the first level of directory) 
+   
+Grep 
+——- 
+Search Files and Directories for Patterns of Text   
+>> grep “word” <file_name> // Find lines containing this word 
+>> grep -w “word” <file_name> // Only find lines containing this whole word (-i for case insensitive search) 
+>> grep -wn “word” <file_name> // Also give line number 
+>> grep -win -B 4 “word” <file_name> // Also print 4 lines before our match 
+>> grep -win -A 4 “word” <file_name> // Also print 4 lines after our match 
+>> grep -win -C 2 “word” <file_name> // Print 2 lines before and after our match 
+>> grep -win “word” ./* // Search everywhere in this directory and find that match (./* wildcard is used) 
+-> Its better to search in all files because searching directory would give us an error 
+>> grep -win “word” ./*.txt 
+>> grep -win -r “word” . // Recursive search for our text in current directory (-r flag) 
+// Only want file names of the matches (use -l flag) 
+>> grep -wir -c “word” . // How many matches in each file (use -c flag) 
+>> history | grep “git commit” // Get only “git commit” commands from history 
+>> history | grep “git commit” | grep “<keyword>” // Get only “git commit” commands having keyword, from history 
+>> grep ”…-…-….” <file_name> // Use regular expression to find - searching phone numbers 
+-> use -P flag to use regular expression on linux (not Mac) 
+   
+Cut 
+—— 
+It cuts a line of a file by "byte position", "character position" or fields based on delimiter. 
+ 
+>> echo I like food | cut –b 1 // It will give you the first letter of text (-b for byte -> reading 1 byte from text) 
+>> echo I like food | cut –c 1 // -c for character  >> echo I like lamp | cut -c 1-5 // cut string from 1st character to 5th character 
+>> cat test.txt | cut -b 1- // 1- indicate from 1st byte to the end byte 
+>> cat test.txt | cut -c 1- 
+-> -3 indicate from 1st byte to 3rd byte of a line 
+>> cut –d'.' -f1 // -d for delimeter and –f for field index and 1 for 1st field index  
+   
+Sed 
+—— 
+-> Stands for stream editor. Used to manipulate text files, replacing/substituting stuff    >> cat text | sed 's/t/T/' // (s for substitute then after slash 't' will be replaced with after slash "T")  
+-> It will capitalize only first occurrence of "t". 
+-> (s/<to be replaced>/<replacement>/) 
+-> It hasn't modified the original file. 
+-> (s/<to be replaced>/<replacement>/g) // here "g" in the end means global. It will do replacement till the end. 
+>> sed 's/t/T/g' file_name > new_file  // save output to a new file 
+>> sed -i 's/t/T/g' <file_name> // To make change in original file 
+  
+-> We can also use regular expressions on the place of <to be replaced> 
+>> sed "s/\s*#.*//g" test.txt // Remove comments from our file (\s*#.* -> Regex) 
+ 
+-> We can also concatenate multiple sed commands by putting semicolon in the string: 
+>> sed "s/\s*#.*//g; s/c/C/g" test.txt   
+>> sed "/Cheema/ d" test.txt // Delete all the lines having "Cheema" in it. 
+>> sed "/Cheema/ p" test.txt // (p -> Print out the line again if it contains "Cheema") 
+ 
+>> sed "11 q" test.txt // When you find 11th line then quit the file 
+>> sed "/^$/ d" test.txt // Remove all blank lines 
+>> sed "/^\s*$/ d" test.txt // Remove blank lines even if they have spaces 
+   
+Awk 
+—— 
+awk is a pattern-matching language built around reading and manipulating delimited data files, like CSV files.   
+-> Turing complete language 
+-> By default, awk separate by whitespace 
+-> Put pattern in single quotes instead of double quotes 
+ 
+>> awk 'BEGIN {sum=0; count=0; OFS=" "} {sum+=$2; count++} END {print "Average:", sum/count}' file // $2 picks element at 2nd column.    
+Basic Syntax: 
+-> awk options 'selection _criteria ' input-file > output-file 
+ 
+>> awk '{print}' employee.txt  // Print all content of the file 
+>> awk '/manager/ {print}' employee.txt  // Print lines with given pattern 
+>> awk '{print $1,$4}' employee.txt // (Prints first 2 entities of the line splited by space) awk splits a line by whitespace by default and store each entity in $1, $2 ..etc respectively. $0 contain complete line. 
+  >> awk '{print NR,$0}' employee.txt  // Display line number as well 
+>> awk '{print NR "- " $1 }' test.txt 
+ 
+>> awk '{ print $1 }' test.txt // Print first columns of each line (space separated) ($2 for second column and etc...)   
+>> awk '{ print $1,$2 }' test.txt // Return 2 columns of each line 
+>> awk '{ print $1.$2 }' test.txt // . Is for concatenation of 2 columns 
+ 
+-> we can also use regular expressions in awk. 
+>> awk '/test/ { print }' test.txt // Print lines which have "test" (case sensitive) 
+>> awk '/[0-9]/ { print }' test.txt // Grab every line that contains numbers 
+ 
+>> awk '{ if($1 ~ /123/) print }' test.txt // print lines which have 123 in 1st column 
+>> awk '{ if($1 ~ /[0-9]/) print }' test.txt // print lines which have any number in 1st column 
+ 
+>> cat test.txt | awk -F# '{ print $2 }' // print 2nd column separated by # delimeter 
+
+
+
+ 
+Uniq 
+——- 
+>> uniq <file_name> // return unique lines 
+>> uniq –c <file_name> // Also gives the count for each line if they're repeated, it be be incremented. 
+>> uniq –d <file_name> // Only return those lines which are repeated  
+>> uniq –u <file_name> <output_file> // Remove repeated lines (incl original line) and put everything in output file. 
+ 
+ 
+Xargs 
+-------- 
+ 
+The xargs command is used in a UNIX shell to convert input from standard input into arguments to a command.   
+>> echo {1..9} | xargs 
+>> echo {1..9} | xargs –n1 // deal with one number per line 
+>> find . -maxdepth 1 -name "*.txt" | xargs tar -czvf mytar.tgz // Convert all the text files into one tar file 
+>> seq 5 | xargs echo "Hello" // Put each number in front of Hello (one spaced) 
+>> seq 5 | xargs -n 1 echo "Hello" // Put Hello and a number on each line 
+>> ls | xargs –n 1 chgrp cdrom // Changing group for all the files shown in ls 
+ 
+ 
+Other 
+-------- 
+-> Create 9 text files 
+>> touch file{1..9}.txt   
+-> seq 5 // will print each number of new line   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+————————————————————————————————————————————————————————————————————————
+————————————————————————————————————————————————————————————————————————
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

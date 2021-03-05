@@ -1,0 +1,205 @@
+HackerRank practice
+
+bash loop
+for ((i=1; i<100; i+=2))
+do
+    echo $i
+done
+---------------
+reading dta
+read first_name
+echo Welcome $first_name
+----------------
+doing expression
+read a 
+read b
+echo $((a + b))
+echo $((a - b))
+echo $((a * b))
+echo $((a / b))
+-----------------
+if statement
+read a
+read b
+if [[ $a -lt $b ]]
+then
+    echo X is less than Y
+fi
+if [[ $a -gt $b ]]
+then
+    echo X is greater than Y
+fi
+if [[ $a -eq $b ]]
+then
+    echo X is equal to Y
+fi
+--------------------
+if with or
+read a
+if [[ $a == "Y" ]] || [[ $a == "y" ]]
+then
+    echo "YES"
+fi
+if [[ $a == "N" ]] || [[ $a == "n" ]]
+then 
+    echo "NO"
+fi
+-----------------
+arithmetic string with floating point
+printf "%.3f" "$(bc -l)"
+-----------------
+computing average
+read n
+printf "%.3f" $(echo "("$(cat)")/$n" | tr ' ' '+' | bc -l)
+----------------
+print first 3 characters
+cut -c 3
+----------------
+printing 2nd and 7th characters
+cut -c 2,7
+----------------
+prints 2nd to 7th character
+cut -c 2-7
+----------------
+print 1st to 4th character
+cut -c 1-4
+---------------
+print first 3 columns
+cut -f1-3 
+---------------
+print 13 to onward
+cut -c13-
+---------------
+seperating with delimiter
+cut -d' ' -f4
+---------------
+selecting field 2 to onwards with surpressed space
+cut -f2- -s
+---------------
+first twenty rows 
+head -20
+---------------
+first twenty characters
+head -c20
+----------------
+middle of text
+head -22 | tail -11
+----------------
+last 20 rows
+tail -20
+-----------------
+last twenty character
+tail -c20
+----------------
+replaces character by character
+tr '()' '[]'
+----------------
+delete regular expression match
+tr -d a-z
+-----------------
+surpress space
+tr -s ' ' ' '
+-----------------
+sorts
+sort
+-----------------
+reverse sort
+sort -r
+-----------------
+sort as numbers
+sort -n
+-----------------
+sort -nr
+-----------------
+sort by column
+sort -t $'\t' -k2 -n -r
+----------------
+sort -t$'\t' -k2 -n
+----------------
+sort by column with seperator |
+sort -t$'|' -k2 -nr
+----------------
+uniq
+---------------
+unique with count
+uniq -c | cut -c7-
+---------------
+uniq case insensitive
+uniq -i -c | cut -c7-
+---------------
+display none repetive
+uniq -u
+---------------
+change delimiter to tab
+paste -sd '\t'
+---------------
+paste 3 in a row
+paste - - -
+
+change delimiter to semicolumn
+paste -sd ';'
+
+change delimiter to ; and paste 3 word in row
+paste -d ';' - - - 
+
+get line with the
+grep " the "
+
+get line with word the with case insensitive
+grep -iw the
+
+without that complete word with case insensitive
+grep -viw "that"
+
+get case insensitive lines with
+grep -iw "the\|that\|then\|those"
+
+get lines with regular expression
+grep '\([0-9]\)\s*\1'
+
+replace first occurence
+sed 's/the /this /'
+
+replace global without case sensitivity
+sed 's/thy/your/ig'
+
+change first 3 occurence to ****
+sed -e 's/[0-9]\+/****/' -e 's/[0-9]\+/****/' -e 's/[0-9]\+/****/'
+
+wrap thy into brakcket
+sed 's/thy/{&}/ig'
+
+sed with backreferencing
+sed -r 's/(.+ )(.+ )(.+ )(....)/\4 \3\2\1/'
+
+awk with if
+awk '{if($4 == ""){print "Not all scores are available for " $1}}'
+
+awk with multiple if
+awk '{ 
+    if ($2 > 49 && $3 > 49 && $4 > 9) 
+        print $1 " : Pass"; 
+    else 
+        print $1 " : Fail"
+    }'
+
+
+complex awk
+awk '{
+    total=$2+$3+$4
+    avg=total/3
+    if($2<50||$3<50||$4<50)
+        print $0 " : FAIL"
+    else if(avg<80)
+        print $0 " : B"
+    else
+        print $0 " : A"
+}'
+
+change line seperator of even rows
+awk 'ORS=NR%2?";":"\n"'
+
+
+
+
+

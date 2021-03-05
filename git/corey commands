@@ -1,0 +1,75 @@
+check git version
+git --version
+
+
+set config for checkin detail
+git config --global user.name "Haider Ali"
+git config --global user.email "email@email.com"
+git config --list
+
+
+help functions
+git help config
+git config --help
+
+initialize directory
+git init
+rm -rf git | remove git repository
+
+get status
+git status
+
+add files to staging area
+git add -A     
+
+reset files from staging area
+git reset
+
+commit code to repository
+git commit -m "message"
+
+git log
+
+clone repo
+git clone <url> <directory>
+
+view information about remote repository
+git remote -v | list information to the repository
+git branch -a | show all branches of repository
+
+git diff | show changes between last commit and current code
+
+
+git pull | pull all changes that are made to remove repository by other users
+git push origin master | push changes to master branch
+
+branches
+git branch calc-divide | creates branch with calc-divide name
+git branch | shows current 
+git checkout calc-divide | check out of current branch and checkin to calc-divide
+git push -u origin calc-divide | associates calc-divide to remote repository
+git branch --merged | show branches that we merged
+git merge calc-divide | merge calc-divide with master
+git branch -d calc-divide | deletes branch
+git push origin --delete calc-divide | delete branch from remote repository
+
+
+modify last commit message
+git commit --ammend -m "cchange message"
+git commit --ammend | Enter then you change file on previous commit
+git checkout branch 
+git cherry-pick hashofcommit | move commit to branch
+
+git reset --soft hashofcommit | change commit but do not delete files
+git reset hashofcommit | change commit and move files to staging area
+git reset --hard hashofcommit | revert all the files
+git clean -df | get rid of untracked directory and files
+git reflog | shows commits in sequence
+git revert hashofcommit | revert files and do a new commit
+
+
+====================
+remove file from staging area
+git reset filename
+
+

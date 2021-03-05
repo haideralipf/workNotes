@@ -1,0 +1,6 @@
+run bash in python
+
+import subprocess
+list_files = subprocess.run(["ls", "-l"], capture_output = True)
+grep_run = subprocess.run(["grep", "Run"], input = list_files.stdout, capture_output=True)
+print(grep_run.stdout.decode("utf-8"))

@@ -1,0 +1,75 @@
+Flask basics
+
+basic Syntax
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/json-example')
+def json_example():
+    return 'JSON Object Example'
+
+if __name__ == '__main__':
+    # run app in debug mode on port 5000
+    app.run(debug=True, port=5000)
+
+
+query string 
+example.com?arg1=value1
+
+two ways to get
+request.args.get('arg1') | safe from exceptions
+request.args['language'] | return 400 if language doesnt exists
+
+
+excepts both get and post request
+@app.route('/form-example', methods=['GET', 'POST'])
+def form_example():
+	return 'JSON Object Example'
+
+if request.method == 'POST':
+	do POST processing here
+
+@app.route('/<name>')
+def hello_name(name):
+    return "Hello {}!".format(name)
+
+For posted form input, use request.form.
+email = request.form.get('email')
+
+sending json data
+{
+    "language" : "Python",
+    "framework" : "Flask",
+    "website" : "Scotch",
+    "version_info" : {
+        "python" : "3.9.0",
+        "flask" : "1.1.2"
+    },
+    "examples" : ["query", "form", "json"],
+    "boolean_test" : true
+}
+
+request_data = request.get_json()
+python_version = request_data['version_info']['python']
+
+# an index is needed because of the array
+example = request_data['examples'][0]
+
+safe way to get data
+if request_data:
+    if 'language' in request_data:
+        language = request_data['language']
+
+    if 'framework' in request_data:
+        framework = request_data['framework']
+
+    if 'version_info' in request_data:
+        if 'python' in request_data['version_info']:
+            python_version = request_data['version_info']['python']
+
+    if 'examples' in request_data:
+        if (type(request_data['examples']) == list) and (len(request_data['examples']) > 0):
+                    example = request_data['examples'][0]
+
+get data from form data
