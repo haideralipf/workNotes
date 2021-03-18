@@ -14,6 +14,7 @@ git config --help
 
 initialize directory
 git init
+rm -rf git | remove git repository
 
 get status
 git status
@@ -65,5 +66,10 @@ git reset --hard hashofcommit | revert all the files
 git clean -df | get rid of untracked directory and files
 git reflog | shows commits in sequence
 git revert hashofcommit | revert files and do a new commit
+
+
+====================
+remove file from staging area
+git reset filename
 
 
