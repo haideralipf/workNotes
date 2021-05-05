@@ -4,3 +4,6 @@ import subprocess
 list_files = subprocess.run(["ls", "-l"], capture_output = True)
 grep_run = subprocess.run(["grep", "Run"], input = list_files.stdout, capture_output=True)
 print(grep_run.stdout.decode("utf-8"))
+
+bash output to python
+subprocess.check_output('cat books/* | wc', shell=True, text=True)
