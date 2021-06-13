@@ -26,14 +26,17 @@ def fetch_capital_name(self, string):
 
 
 def fetch_capital_name_regex(self, string):
-	try:
-		match = re.search("[A-Z][A-Z .,\-]+(?= |$)", string)
-		if match:
-			return match.group(0)
-		else:
-			return ""
-	except:
-		return ""
+    try:
+        string = string.replace('/', '')
+        string = string.replace(".", ",")
+        match = re.search("[A-Z][A-Z ,\-]+(?= |$|[^A-Z])", string)
+        if match:
+            final_str = match.group(0).strip("-,.")
+            return final_str
+        else:
+            return ""
+    except:
+        return ""
 
 
 def parse_full_name(self, full_name):
@@ -71,6 +74,17 @@ def fetch_first_name_from_two_lines_name(self, name):
 			return ""
 	except:
 		return ""
+
+def fetch_date_from_garbage(self, string_date):
+	string_date = string_date.replace(" ", "")
+	match = re.search("\w{2}[.\\- ]\w{2}[.\\- ]\w{4}", string_date)
+	if match:
+		parsed_date = self.word_to_num(match.group(0))
+		return parsed_date
+	else:
+		return ""
+
+
 
 def fetch_capital_pob_regex(string):
 	try:
@@ -119,11 +133,39 @@ def validate_date(self, date_text):
         return datetime.strptime(date_text, "%d%m%Y").strftime("%Y-%m-%d")
     except Exception as e:
         return ""
-        
+
+def parse_date(self,date):
+    try:
+        match = re.search("\w{2}[./\- ]\w{2}[./\- ]\w{4}", date)
+        if match:
+            date = self.word_to_num(match.group(0))
+
+        ls = re.split('[ /\-.]', date)
+        comp_list = []
+        for i in ls:
+            if i[0] == '4':
+                comp_list.append('1' + i[1:])
+            elif i[0] == '6' or i[0] == '9':
+                comp_list.append('0' + i[1:]) 
+            elif i[0] == '8':
+                comp_list.append('3' + i[1:]) 
+            else:
+                comp_list.append(i)
+
+        date = "-".join(comp_list)
+
+        ans = ''.join(i for i in date if i.isnumeric())
+        if len(ans) == 8:
+            date = datetime.datetime.strptime(ans, "%m%d%Y").strftime("%Y-%m-%d")
+        else:
+            date = ""
+        return date
+    except Exception as ex:
+        return ""
 
 def parse_document_type(self, doc_type):
     try:
-        ls_of_chars = ["DRIVER'S", "LICENSE"]
+        ls_of_chars = ["DRIVER", "LICENSE", "IDENTIFICATION", "CARD"]
         fuzzed_type = []
         for item in doc_type.split():
             highest = process.extractOne(item,ls_of_chars)
@@ -131,53 +173,54 @@ def parse_document_type(self, doc_type):
                  fuzzed_type.append(highest[0])
             else:
                 fuzzed_type.append(item)
+        return " ".join(fuzzed_type)
     except:
         return ""
 
 #parse address
 def parse_address(self, address, upper_field = ''):
-	try:
-		index = 0
+    try:
+        index = 0
         for i in range(len(address)):
             if address[i].isdigit():
                 index = i
                 break
         address = address[index:].strip()
-		address = address.replace('\n', ' ').replace(".",",")
+        address = address.replace('\n', ' ').replace(".",",")
 
-		if upper_field:
-			match = re.search(upper_field, address)
-			if match:
-				address = address[match.end():].strip()
+        if upper_field:
+            try:
+                temp = " "+upper_field.split()[-1]+" "
+                raw_field = r"{}".format(temp)
+                match = re.search(temp, address)
+                if match:
+                    address = address[match.end():].strip()
+            except:
+                pass
 
-		str1 = re.sub('[^A-Z0-9 ,-]', '', address)
-		match = re.search('\d+[A-Z0-9 ,-]+\d+', str1)
-		if match:
-			temp_add = match.group(0).split()
-			if len(temp_add[-1]) == 1:
-				return " ".join(temp_add[:-1])
-			else:
-		    	return match.group(0)
-		else:
-			return ""
-	except:
-		return ""
+        str1 = re.sub('[^A-Z0-9 ,-]', '', address)
+        str1 = re.sub('(?<= )-(?= )', '', str1).strip()
+        str1 = " ".join(str1.split())
+        str1 = str1.lstrip('8')
 
-#parse document type with fuzzy wuzzy
-def parse_document_type(self, doc_type):
-    try:
-        ls_of_chars = ["DRIVER'S", "LICENSE"]
-        fuzzed_type = []
-        for item in doc_type.split():
-            highest = process.extractOne(item,ls_of_chars)
-            if highest[1] > 80:
-                 fuzzed_type.append(highest[0])
+        match = re.search('\d+[A-Z0-9 ,-]+[A-Z]{2} ?\d+([ -]+\d+)?', str1)
+
+        if match:
+            address = match.group(0)
+            temp_add = address.split()
+            if len(temp_add) > 2:
+                if len(temp_add[0]) == 1 and temp_add[0].isnumeric() and temp_add[1].isnumeric():
+                    temp_add = temp_add[1:]
+
+            if len(temp_add[-1]) == 1:
+                return " ".join(temp_add[:-1])
             else:
-                fuzzed_type.append(item)
-                
-        return " ".join(fuzzed_type)
-    except:
+                return " ".join(temp_add)
+        else:
+            return ""
+    except Exception as ex:
         return ""
+        
 
 #parse document_number
 def parse_document_number(self, number):
@@ -188,15 +231,40 @@ def parse_document_number(self, number):
 	except:
 		return ""
 
+#document number with dd
+def parse_document_number(self,doc_number):
+    try:
+        doc_number = doc_number.upper()
+        doc_number = re.sub('^\d{2} ', '', doc_number)
+        doc_number = re.split('^\d?[., \-]*\w*[DOP] ', doc_number)[-1]
+        new_personal_number=''.join([i for i in doc_number if i.isalnum()])
+        return new_personal_number
+    except:
+        return ""
+
 #parse_gender
 def parse_gender(self, text):
-	try:
-		if 'F' in text or 'T' in text or 'R' in text: 
-			return 'F'
-		if 'M' in text or 'N' in text or 'A' in text:
-			return 'M'
-	except:
-		return ""
+    try:
+        text = text.upper()
+        if 'F' in text or 'T' in text or '7' in text: 
+            return 'F'
+        elif 'M' in text or 'N' in text or 'A' in text or 'W' in text or 'w' in text:
+            return 'M'
+        else:
+            return ""
+    except:
+        return ""
+
+def parse_personal_number(self,doc_number):
+    try:
+        if not "/" in doc_number:
+            new_personal_number=''.join([i for i in doc_number if i.isdigit()])
+            if len(new_personal_number) == 10:
+                new_personal_number = new_personal_number[1:]
+            return new_personal_number
+        return ""
+    except:
+        return ""
 
 
 #gender roi
